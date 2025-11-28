@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">VK-Kotlin-DZ2</string>
+
+    <string name="error_title">Произошла ошибка</string>
+    <string name="error_retry">Повторить</string>
+    <string name="image_click_snackbar_text">Вы нажали на картинку №%1$d</string>
+    <string name="page_size">30</string>
+    <string name="image_cache_file_name">images_cache.json</string>
+    <string name="base_url">https://api.thecatapi.com/v1/</string>
+    <string name="cat_api_key">live_s0NZPgKOgW8x5LIJjOfmKjLYsOZClSANRywDU3LBXVjtwZF4y58Cz6dkMIyOchkv</string>
 </resources>

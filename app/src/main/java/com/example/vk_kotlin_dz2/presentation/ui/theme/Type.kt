@@ -1,4 +1,4 @@
-package com.example.vk_kotlin_dz2.ui.theme
+package com.example.vk_kotlin_dz2.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
