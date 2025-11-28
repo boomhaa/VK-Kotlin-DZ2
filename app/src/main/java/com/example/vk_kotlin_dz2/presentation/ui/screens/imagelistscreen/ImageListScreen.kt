@@ -3,6 +3,7 @@ package com.example.vk_kotlin_dz2.presentation.ui.screens.imagelistscreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,11 +18,10 @@ import coil.decode.ImageDecoderDecoder
 import com.example.vk_kotlin_dz2.presentation.ui.screens.imagelistscreen.components.ErrorPlaceholder
 import com.example.vk_kotlin_dz2.presentation.viewmodel.ImageListViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.vk_kotlin_dz2.R
 import com.example.vk_kotlin_dz2.presentation.ui.screens.imagelistscreen.components.ImageCard
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -49,8 +49,7 @@ fun ImageListScreen(
 
     LaunchedEffect(gridState, uiState.images.size) {
         snapshotFlow { gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-            .filter { it != null }
-            .map { it!! }
+            .filterNotNull()
             .distinctUntilChanged()
             .collect { index ->
                 val lastIndex = uiState.images.lastIndex
@@ -95,13 +94,11 @@ fun ImageListScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            items(
-                                count = uiState.images.size,
-                                key = { index -> uiState.images[index].id }
-                            ) { index ->
-                                val item = uiState.images[index]
+                            itemsIndexed(
+                                uiState.images
+                            ) { index, image ->
                                 ImageCard(
-                                    image = item,
+                                    image = image,
                                     imageLoader = imageLoader,
                                     onClick = {
                                         val message = context.getString(
