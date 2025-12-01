@@ -1,12 +1,12 @@
 package com.example.vk_kotlin_dz2.di
 
 import android.content.Context
+import com.example.vk_kotlin_dz2.BuildConfig
 import com.example.vk_kotlin_dz2.R
+import com.example.vk_kotlin_dz2.data.local.CacheManager
 import com.example.vk_kotlin_dz2.data.remote.api.GifApi
 import com.example.vk_kotlin_dz2.data.remote.api.ImageApi
-import com.example.vk_kotlin_dz2.data.repository.CacheRepositoryImpl
 import com.example.vk_kotlin_dz2.data.repository.ImageRepositoryImpl
-import com.example.vk_kotlin_dz2.domain.repository.CacheRepository
 import com.example.vk_kotlin_dz2.domain.repository.ImageRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -27,11 +27,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideCacheRepository(
+    fun provideCacheManager(
         @ApplicationContext context: Context,
         json: Json
-    ): CacheRepository {
-        return CacheRepositoryImpl(
+    ): CacheManager {
+        return CacheManager(
             context = context,
             json = json
         )
@@ -42,13 +42,13 @@ object AppModule {
     fun provideImageRepository(
         api: ImageApi,
         gifApi: GifApi,
-        cacheRepository: CacheRepository,
+        cacheManager: CacheManager,
         @ApplicationContext context: Context
     ): ImageRepository {
         return ImageRepositoryImpl(
             api = api,
             gifApi = gifApi,
-            cacheRepository = cacheRepository,
+            cacheManager = cacheManager,
             context = context
         )
     }
@@ -61,10 +61,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(
-        @ApplicationContext context: Context
-    ): OkHttpClient {
-        val apiKey = context.getString(R.string.cat_api_key)
+    fun provideOkHttpClient(): OkHttpClient {
+        val apiKey = BuildConfig.API_KEY
 
         val apiKeyInterceptor = Interceptor { chain ->
             val request = chain.request()

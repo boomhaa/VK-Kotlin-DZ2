@@ -1,9 +1,8 @@
-package com.example.vk_kotlin_dz2.data.repository
+package com.example.vk_kotlin_dz2.data.local
 
 import android.content.Context
 import com.example.vk_kotlin_dz2.R
 import com.example.vk_kotlin_dz2.domain.model.ImageItem
-import com.example.vk_kotlin_dz2.domain.repository.CacheRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,10 +13,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CacheRepositoryImpl @Inject constructor(
+class CacheManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val json: Json
-) : CacheRepository {
+) {
 
     private val cacheFile: File
         get() {
@@ -27,7 +26,7 @@ class CacheRepositoryImpl @Inject constructor(
 
     private val listSerializer = ListSerializer(ImageItem.serializer())
 
-    override suspend fun readCache(): List<ImageItem>  = withContext(Dispatchers.IO){
+    suspend fun readCache(): List<ImageItem> = withContext(Dispatchers.IO) {
         if (!cacheFile.exists()) return@withContext emptyList()
 
         val text = cacheFile.readText()
@@ -38,14 +37,14 @@ class CacheRepositoryImpl @Inject constructor(
         }.getOrElse { emptyList() }
     }
 
-    override suspend fun writeCache(images: List<ImageItem>) = withContext(Dispatchers.IO) {
+    suspend fun writeCache(images: List<ImageItem>) = withContext(Dispatchers.IO) {
         if (!cacheFile.exists()) cacheFile.createNewFile()
 
         val text = json.encodeToString(listSerializer, images)
         cacheFile.writeText(text)
     }
 
-    override suspend fun clearCache() {
+    suspend fun clearCache() {
         if (!cacheFile.exists()) cacheFile.delete()
     }
 }

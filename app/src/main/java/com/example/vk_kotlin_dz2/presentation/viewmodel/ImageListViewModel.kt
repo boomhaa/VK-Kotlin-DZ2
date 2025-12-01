@@ -32,6 +32,7 @@ class ImageListViewModel @Inject constructor(
     fun onRetry() {
         loadInitData()
     }
+
     fun loadNextPage() {
         if (_uiState.value.isPaginationLoading || _uiState.value.isEndReached) return
 
@@ -45,7 +46,7 @@ class ImageListViewModel @Inject constructor(
 
         viewModelScope.launch {
             val currentImages = _uiState.value.images
-            val result = imageRepository.loadPage(_uiState.value.currentPage, currentImages)
+            val result = imageRepository.loadPage(_uiState.value.currentPage)
 
             result.onSuccess { newItems ->
                 val all = currentImages + newItems
@@ -78,7 +79,7 @@ class ImageListViewModel @Inject constructor(
                             .toInt()) + 1
                     )
                 }
-            }else{
+            } else {
                 _uiState.value = _uiState.value.copy(
                     isInitialLoading = false,
                     error = null,
